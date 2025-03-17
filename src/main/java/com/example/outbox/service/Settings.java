@@ -36,9 +36,9 @@ public class Settings {
     public Settings( @Value("${outbox.delays}") String delaysString,
                      @Value("${outbox.buckets}") String bucketsString,
                      @Value("${outbox.send_failure_rate}") String sfailureRate,
-                     @Value("${outbox.retry") Boolean retry) {
+                     @Value("${outbox.retry") String retryString) {
 
-        this.retry = retry;
+        this.retry = Boolean.getBoolean(retryString);
 
         this.buckets = Integer.parseInt(bucketsString);
         if (logger.isDebugEnabled())
