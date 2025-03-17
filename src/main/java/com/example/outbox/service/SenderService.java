@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 import java.text.MessageFormat;
 import java.util.Random;
 
-//outbox.send_failure_rate
-
 @Slf4j
 @Service
 public class SenderService {
@@ -21,23 +19,27 @@ public class SenderService {
     private final SleepForSeconds sleepForSeconds;
     private final Settings settings;
 
+    private final Random random = new Random();
+
     public SenderService(SleepForSeconds sleepForSeconds, Settings settings) {
         this.sleepForSeconds = sleepForSeconds;
         this.settings = settings;
     }
 
     public boolean sendMessage(String message) {
-        logger.debug(MessageFormat.format("Sending message :{0}", message));
+        if (logger.isDebugEnabled())
+            logger.debug(MessageFormat.format("Sending message :{0}", message));
         sleepForSeconds.sleepForSeconds(SECONDS_TO_SLEEP);
 
         // chance whether send worked or not - number between 1 and 100
-        Random random = new Random();
         int randomNumber = random.nextInt(100) + 1;
         boolean worked = randomNumber > settings.failureRate;
-        if (worked) {
-            logger.debug(MessageFormat.format("Send message:{0} worked", message));
-        } else {
-            logger.debug(MessageFormat.format("Send message:{0} failed", message));
+        if (logger.isDebugEnabled()) {
+            if (worked) {
+                logger.debug(MessageFormat.format("Send message:{0} worked", message));
+            } else {
+                logger.debug(MessageFormat.format("Send message:{0} failed", message));
+            }
         }
         return worked;
     }
