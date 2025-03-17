@@ -31,10 +31,14 @@ public class Settings {
     public final Integer buckets;
     public final Integer[] delays;
     public final Integer failureRate;
+    public final Boolean retry;
 
     public Settings( @Value("${outbox.delays}") String delaysString,
                      @Value("${outbox.buckets}") String bucketsString,
-                     @Value("${outbox.send_failure_rate}") String sfailureRate) {
+                     @Value("${outbox.send_failure_rate}") String sfailureRate,
+                     @Value("${outbox.retry") Boolean retry) {
+
+        this.retry = retry;
 
         this.buckets = Integer.parseInt(bucketsString);
         if (logger.isDebugEnabled())

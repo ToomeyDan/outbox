@@ -22,13 +22,16 @@ public class OutboxService implements ApplicationRunner {
     private final SleepForSeconds sleepForSeconds;
     private final MessageService messageService;
     private final SenderService senderService;
+    private final Settings settings;
 
     public OutboxService(SleepForSeconds sleepForSeconds,
                          MessageService messageService,
-                         SenderService senderService) {
+                         SenderService senderService,
+                         Settings settings) {
         this.sleepForSeconds = sleepForSeconds;
         this.messageService = messageService;
         this.senderService = senderService;
+        this.settings = settings;
     }
 
     @Override
@@ -51,7 +54,8 @@ public class OutboxService implements ApplicationRunner {
                     message.setSent(true);
 
                     //once any message works, retry the others that failed
-                    messageService.retryFailedMessages();
+                    if (settings.retry)
+                        messageService.retryFailedMessages();
                 } else {
                     // bump message settings
                     message.setTries(message.getTries()+1);
